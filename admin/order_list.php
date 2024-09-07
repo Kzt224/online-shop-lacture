@@ -21,48 +21,6 @@
    }
  }
 
-    if(!empty($_GET['pageno'])){
-      $pageno = $_GET['pageno'];
-    }else{
-      $pageno = 1;
-    }
-
-    $numberOfrecs = 4;
-    $offSet = ($pageno -1) * $numberOfrecs ;
-
-
-      //  if no search the category run this code 
-  if(empty($_POST['search']) && empty($_COOKIE['search'])){
-    //code for table
-       $statement = $pdo->prepare("SELECT * FROM products ORDER BY id DESC");
-       $statement->execute();
-       $rawresult = $statement->fetchAll();
-       $total_pages = ceil(count($rawresult) / $numberOfrecs);
-
-       $statement = $pdo->prepare("SELECT * FROM products ORDER BY id DESC LIMIT $offSet,$numberOfrecs");
-       $statement->execute();
-       $result = $statement->fetchAll();
-  }else{
-     if(isset($_POST['search'])){
-       $searchKey = $_POST['search'];
-     }else{
-       $searchKey = $_COOKIE['search'];
-     }
-    //  if  search the category run this code 
-    $statement = $pdo->prepare("SELECT * FROM products WHERE name LIKE '%$searchKey%' OR description LIKE '%$searchKey%'  ORDER BY id DESC LIMIT $offSet,$numberOfrecs");
-    $statement->execute();
-    $result = $statement->fetchAll();
-    $total_pages = ceil(count($result) / $numberOfrecs);
-
-    // if test the code and error remove comment
-
-    //  $statement = $pdo->prepare("SELECT * FROM categories WHERE description LIKE '%$searchKey%'  ORDER BY id DESC");
-    //  $statement->execute();
-    //  $rawresult = $statement->fetchAll();
-    //  $total_pages = ceil(count($rawresult) / $numberOfrecs);
- 
-  }
-
 ?>
   <?php 
     include("header.php");
@@ -70,6 +28,43 @@
   
   ?>
     <!-- /.content-header -->
+    <?php  
+
+//for pagination
+  if(!empty($_GET['pageno'])){
+    $pageno = $_GET['pageno'];
+  }else{
+    $pageno = 1;
+  }
+
+  $numberOfrecs = 4;
+  $offSet = ($pageno -1) * $numberOfrecs ;
+  
+       $statement = $pdo->prepare("SELECT * FROM sale_orders ORDER BY id DESC");
+       $statement->execute();
+       $rawresult = $statement->fetchAll();
+       $total_pages = ceil(count($rawresult) / $numberOfrecs);
+
+       $statement = $pdo->prepare("SELECT * FROM sale_orders ORDER BY id DESC LIMIT $offSet,$numberOfrecs");
+       $statement->execute();
+       $result = $statement->fetchAll();
+
+
+?> 
+  
+   <?php 
+     if(isset($_GET['success'])){
+        echo "<script>
+        swal ({
+            title: 'success!',
+            text: 'category add successfully',
+            icon: 'success',
+            button: 'ok'
+     })
+        </script>";
+     }
+   ?>
+
 
     <!-- Main content -->
     <div class="content">
@@ -78,22 +73,17 @@
           <div class="col-12">
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">Product Listing</h3>
+                <h3 class="card-title">Orders Listing</h3>
               </div><br>
-                <div class="container-fluid">
-                   <a href="productadd.php" type="button" class="btn btn-success">Create New Product</a>
-                </div>
               <!-- /.card-header -->
-              <div class="card-body">
+           <div class="card-body">
                 <table class="table table-bordered">
                   <thead>
                     <tr>
-                      <th style="width: 10px">id</th>
-                      <th>Name</th>
-                      <th>Description</th>
-                      <th>Category</th>
-                      <th>In Stock</th>
-                      <th>Price</th>
+                      <th style="width: 10px">#</th>
+                      <th>User</th>
+                      <th>Total Price</th>
+                      <th>Date</th>
                       <th style="width: 40px">Actions</th>
                     </tr>
                   </thead>
@@ -101,28 +91,22 @@
                       <?php  
                         if($result){
                            $i=1;
-                          foreach ($result as  $value) {
-                             ?> 
+                          foreach ($result as  $value) {?> 
                           <?php 
-                           $catstatement = $pdo->prepare("SELECT * FROM categories WHERE id=".$value['category_id']);
-                           $catstatement->execute();
-                           $cactresult = $catstatement->fetchAll();
+                           $userstatement = $pdo->prepare("SELECT * FROM user WHERE id=".$value['user_id']);
+                           $userstatement->execute();
+                           $userresult = $userstatement->fetchAll();
                           ?>
                     <tr>
                       <td><?= $i ?></td>
-                      <td><?= escape($value['name']) ?></td>
-                      <td><?= escape(substr($value['description'],0,30) ) ?> </td>
-                      <td><?= escape($cactresult[0]['name']) ?></td>
-                      <td><?= escape($value['quantity']) ?></td>
-                      <td>$<?= escape($value['price']) ?></td>
+                      <td><?= escape($userresult[0]['name'] ) ?></td>
+                      <td>$<?= escape($value['total_prices']) ?> </td>
+                      <td><?= escape(date('y-m-d',strtotime($value['ordered_date']))) ?></td>
                       <td>
                         <div class="btn-group">
                           <div class="container">
-                             <a href="productedit.php?id=<?= $value['id'] ?>" type="button" class="btn btn-warning">Edit</a>
+                             <a href="order_detail.php?id=<?= $value['id'] ?>" type="button" class="btn btn-warning">View</a>
                           </div>
-                          <div class="container">
-                            <a href="productdelete.php?id=<?= $value['id'] ?>" type="button" class="btn btn-danger" onclick=" return confirm('Are you sure you want to delete this item?');">Delete</a>
-                         </div>
                         </div>
                       </td>
                     </tr>                         
@@ -133,7 +117,8 @@
                       ?>
                   </tbody>
                </table><br>
-              <!-- php code here -->
+          
+             
               <nav aria-label="Page navigation example" style="float: right">
                 <ul class="pagination">
                         <li class="page-item"><a class="page-link" href="?pageno=1">First</a></li>
@@ -147,10 +132,8 @@
                         <li class="page-item"><a class="page-link" href="?pageno=<?= $total_pages ?>">Last</a></li>
                       </ul>
                </nav>
+              
                 </div>
-            
-              
-              
             </div>
           </div>
         </div>

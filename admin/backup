@@ -94,7 +94,7 @@
                         <li class="page-item"><a class="page-link" href="?pageno=<?= $total_pages ?>">Last</a></li>
                       </ul>
                 </nav>
-              </div>
+</div>
              
 
 

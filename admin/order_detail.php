@@ -39,38 +39,19 @@
 
   $numberOfrecs = 4;
   $offSet = ($pageno -1) * $numberOfrecs ;
-  
-  //  if no search the category run this code 
-  if(empty($_POST['search']) && empty($_COOKIE['search'])){
-    //code for table
-       $statement = $pdo->prepare("SELECT * FROM categories ORDER BY id DESC");
+       
+        // id from view buttom
+
+        $id = $_GET['id'];
+       
+       $statement = $pdo->prepare("SELECT * FROM sale_orders_detail WHERE id = $id ");
        $statement->execute();
        $rawresult = $statement->fetchAll();
        $total_pages = ceil(count($rawresult) / $numberOfrecs);
 
-       $statement = $pdo->prepare("SELECT * FROM categories ORDER BY id DESC LIMIT $offSet,$numberOfrecs");
+       $statement = $pdo->prepare("SELECT * FROM sale_orders_detail WHERE id = $id LIMIT $offSet,$numberOfrecs");
        $statement->execute();
        $result = $statement->fetchAll();
-  }else{
-     if(isset($_POST['search'])){
-       $searchKey = $_POST['search'];
-     }else{
-       $searchKey = $_COOKIE['search'];
-     }
-    //  if  search the category run this code 
-    $statement = $pdo->prepare("SELECT * FROM categories WHERE name LIKE '%$searchKey%' OR description LIKE '%$searchKey%'  ORDER BY id DESC LIMIT $offSet,$numberOfrecs");
-    $statement->execute();
-    $result = $statement->fetchAll();
-    $total_pages = ceil(count($result) / $numberOfrecs);
-
-    // if test the code and error remove comment
-
-    //  $statement = $pdo->prepare("SELECT * FROM categories WHERE description LIKE '%$searchKey%'  ORDER BY id DESC");
-    //  $statement->execute();
-    //  $rawresult = $statement->fetchAll();
-    //  $total_pages = ceil(count($rawresult) / $numberOfrecs);
- 
-  }
 
 
 ?> 
@@ -96,42 +77,37 @@
           <div class="col-12">
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">Category Listing</h3>
-              </div><br>
-                <div class="container-fluid">
-                   <a href="catadd.php" type="button" class="btn btn-success">Create New</a>
-                </div>
+                <h3 class="card-title">Orders Details </h3>
+                 </div><br>
+              
               <!-- /.card-header -->
            <div class="card-body">
+           <a href="order_list.php" class="btn btn-primary" type="btn">Back</a>
+           <br><br>
                 <table class="table table-bordered">
                   <thead>
                     <tr>
                       <th style="width: 10px">#</th>
-                      <th>Name</th>
-                      <th>Description</th>
-                      <th style="width: 40px">Actions</th>
+                      <th>Product</th>
+                      <th>quantity</th>
+                      <th>Date</th>
                     </tr>
                   </thead>
                   <tbody>
                       <?php  
                         if($result){
                            $i=1;
-                          foreach ($result as  $value) {
-                             ?> 
+                          foreach ($result as  $value) {?> 
+                          <?php 
+                           $pstatement = $pdo->prepare("SELECT * FROM products WHERE id=".$value['product_id']);
+                           $pstatement->execute();
+                           $presult = $pstatement->fetchAll();
+                          ?>
                     <tr>
                       <td><?= $i ?></td>
-                      <td><?= escape($value['name']) ?></td>
-                      <td><?= escape(substr($value['description'],0,60) ) ?> </td>
-                      <td>
-                        <div class="btn-group">
-                          <div class="container">
-                             <a href="catedit.php?id=<?= $value['id'] ?>" type="button" class="btn btn-warning">Edit</a>
-                          </div>
-                          <div class="container">
-                            <a href="catdelete.php?id=<?= $value['id'] ?>" type="button" class="btn btn-danger" onclick=" return confirm('Are you sure you want to delete this item?');">Delete</a>
-                         </div>
-                        </div>
-                      </td>
+                      <td><?= escape($presult[0]['name'] ) ?></td>
+                      <td><?= escape($value['quantity']) ?> </td>
+                      <td><?= $value['ordered_date'] ?></td>
                     </tr>                         
                           <?php
                             $i++;
