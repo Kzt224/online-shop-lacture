@@ -112,3 +112,29 @@
         </script>";
      }
    ?>
+
+
+$name = $_POST['name'];
+    $description = $_POST['description'];
+
+    $stmt = $pdo->prepare("INSERT INTO categories(name,description) VALUES(:name,:description)");
+    $res = $stmt->execute(
+      array(':name' => $name, ':description' => $description )
+    );
+
+    if($res){
+      header("location: category.php?". "success=1");
+   }
+
+
+   $name = $_POST['name'];
+       $description = $_POST['description'];
+       
+       $catstatement = $pdo->prepare("SELECT * FROM categories WHERE name=".$_POST['category_name']);
+       $catstatement->execute();
+       $cactresult = $statement->fetchAll();
+
+       $category_id = $cactresult['id'];
+
+       $move_path = 
+       $img_name = $_FILES['image']['name'];

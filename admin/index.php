@@ -12,6 +12,7 @@
   if($_SESSION['role_id'] != 1){
      header("location: login.php");
   }
+
   if(!empty($_POST['search'])){
     setcookie('search', $_POST['search'], time() + (86400 * 30), "/");
  }else{
@@ -27,7 +28,7 @@
       $pageno = 1;
     }
 
-    $numberOfrecs = 4;
+    $numberOfrecs = 1;
     $offSet = ($pageno -1) * $numberOfrecs ;
 
 
@@ -43,23 +44,25 @@
        $statement->execute();
        $result = $statement->fetchAll();
   }else{
-     if(isset($_POST['search'])){
-       $searchKey = $_POST['search'];
-     }else{
-       $searchKey = $_COOKIE['search'];
-     }
+     
+    if(isset($_POST['search'])){
+      $searchKey = $_POST['search'];
+    }else{
+      $searchKey = $_COOKIE['search'];
+    }
+
     //  if  search the category run this code 
-    $statement = $pdo->prepare("SELECT * FROM products WHERE name LIKE '%$searchKey%' OR description LIKE '%$searchKey%'  ORDER BY id DESC LIMIT $offSet,$numberOfrecs");
+    $statement = $pdo->prepare("SELECT * FROM products WHERE name LIKE '%$searchKey%'  ORDER BY id DESC ");
     $statement->execute();
-    $result = $statement->fetchAll();
-    $total_pages = ceil(count($result) / $numberOfrecs);
+    $rawresult = $statement->fetchAll();
+    $total_pages = ceil(count($rawresult) / $numberOfrecs);
 
-    // if test the code and error remove comment
+   // if test the code and error remove comment
 
-    //  $statement = $pdo->prepare("SELECT * FROM categories WHERE description LIKE '%$searchKey%'  ORDER BY id DESC");
-    //  $statement->execute();
-    //  $rawresult = $statement->fetchAll();
-    //  $total_pages = ceil(count($rawresult) / $numberOfrecs);
+     $statement = $pdo->prepare("SELECT * FROM products WHERE name LIKE '%$searchKey%'  ORDER BY id DESC LIMIT $offSet,$numberOfrecs ");
+     $statement->execute();
+     $result = $statement->fetchAll();
+     
  
   }
 

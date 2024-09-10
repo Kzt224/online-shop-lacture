@@ -74,12 +74,13 @@
                      //code for table
                       $statement = $pdo->prepare("SELECT * FROM user WHERE name LIKE '%$searchKey%' OR email LIKE '%$searchKey%'  ORDER BY id DESC");
                       $statement->execute();
-                      $result = $statement->fetchAll();
-                      $total_pages = ceil(count($result) / $numberOfrecs);
+                      $rawresult = $statement->fetchAll();
 
-                      // $statement = $pdo->prepare("SELECT * FROM user WHERE name LIKE '%$searchKey%'  ORDER BY id DESC LIMIT $offSet,$numberOfrecs");
-                      // $statement->execute();
-                      // $result = $statement->fetchAll();
+                      $total_pages = ceil(count($rawresult) / $numberOfrecs);
+
+                      $statement = $pdo->prepare("SELECT * FROM user WHERE name LIKE '%$searchKey%' OR email LIKE '%$searchKey%' ORDER BY id DESC LIMIT $offSet,$numberOfrecs");
+                      $statement->execute();
+                      $result = $statement->fetchAll();
                      
                    }
                    

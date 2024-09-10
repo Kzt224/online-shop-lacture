@@ -4,38 +4,69 @@
    include("../config/config.php");
    include("../config/common.php");
 
+
    if($_POST){
-      $email = $_POST['email'];
-	  $password = $_POST['password'];
+       if(empty($_POST['name']) || empty($_POST['email']) || empty($_POST['password']) 
+	   || empty($_POST['address']) || empty($_POST['phone']) ){
+	
+	    if(empty($_POST['name']) ){
+			$nameError = "* User name cannot be null";
+		}
+		if(empty($_POST['email']) ){
+			$emailError = "* Email cannot be null";
+		}
+		if(empty($_POST['password']) ){
+			$passError = "*Password cannot be null";
 
-	  $stmt = $pdo->prepare("SELECT * FROM user WHERE email= :email");
-	  $stmt->bindValue(':email' , $email);
-	  $stmt->execute();
+		}
+		if(!empty($_POST['password']) && strlen($_POST['password']) < 4){
+			$passError = "*password should be 4 character at least";
+		   }
+		if(empty($_POST['address']) ){
+			$addError = "* address cannot be null";
+		}
+		if(empty($_POST['phone']) ){
+			$phoneError = "* Phone number  cannot be null";
+		}
+	
+	}else{
+		$name = $_POST['name'];
+		$email = $_POST['email'];
+		$password = password_hash($_POST['password'],PASSWORD_DEFAULT);
+		$address = $_POST['address'];
+		$phone = $_POST['phone'];
+		$role = 0;
 
-	  $user =$stmt->fetch(PDO::FETCH_ASSOC);
 
-	  if($user){
-		 if(password_verify($password,$user['password'])){
-			$_SESSION['user_id'] = $user['id'];
-			$_SESSION['user_name'] = $user['name'];
-			$_SESSION['logged_in'] = time();
-			header("location: index.php");
-		 }else{
-			echo "<script>alert('incorrect email or password')</script>";
-		 }
-	  }
+		$estmt = $pdo->prepare("SELECT * FROM user WHERE email=:email");
+		$eRes = $estmt->execute([':email' => $email]);
 
-   }
+		if($eRes){
+			echo "<script>alert('this Email was already have an account try another email');</script>";
+		}else{
 
+			$stmt = $pdo->prepare("INSERT INTO user(name,email,password,address,phone,role)
+		             VALUES(:name,:email,:password,:address,:phone,:role)");
 
+			$res = $stmt->execute(
+				array(':name' => $name,':email' => $email,':password' => $password,
+					':address' => $address,':phone' => $phone,':role' => $role)
+			);
+
+			if($res){
+				echo "<script>alert('register successfully ');window.location.href='login.php';</script>";
+			}
+
+		}
+		
+  }
+}
 
 
 
 
 
 ?>
-
-
 
 
 
@@ -120,30 +151,45 @@
 					<div class="login_box_img">
 						<img class="img-fluid" src="img/login.jpg" alt="">
 						<div class="hover">
-							<h4>New to our website?</h4>
+							<h4>Visited to our website?</h4>
 							<p>There are advances being made in science and technology everyday, and a good example of this is the</p>
-							<a class="primary-btn" href="register.php">Create an Account</a>
+							<a class="primary-btn" href="login.php">Login an Account</a>
 						</div>
 					</div>
 				</div>
 				<div class="col-lg-6">
 					<div class="login_form_inner">
-						<h3>Log in to enter</h3>
+						<h3>Register to enter</h3>
 						<form class="row login_form" action="" method="post" id="contactForm" novalidate="novalidate">
-						<input type="hidden" name="_token" value="<?php echo $_SESSION['_token']; ?>">
+						        <input type="hidden" name="_token" value="<?php echo $_SESSION['_token']; ?>">
+
+						     <p><span style="color : red"><?php echo empty($nameError) ? '' : $nameError ; ?></span></p>
+                           <div class="col-md-12 form-group">
+								<input type="text" class="form-control" id="name" name="name" placeholder="Username" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Username'">
+						   </div>
+
+							  <p><span style="color : red"><?php echo empty($emailError) ? '' : $emailError ; ?></span></p>
 							<div class="col-md-12 form-group">
 								<input type="email" class="form-control" id="name" name="email" placeholder="Email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Email'">
 							</div>
+
+							  <p><span style="color : red"><?php echo empty($passError) ? '' : $passError ; ?></span></p>
 							<div class="col-md-12 form-group">
 								<input type="password" class="form-control" id="name" name="password" placeholder="Password" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Password'">
 							</div>
+
+							   <p><span style="color : red"><?php echo empty($addError) ? '' : $addError ; ?></span></p>
 							<div class="col-md-12 form-group">
-								<div class="creat_account">
-									<!-- blank for style -->
-								</div>
+								<input type="address" class="form-control" id="name" name="address" placeholder="Your address" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Address'">
 							</div>
+
+							   <p><span style="color : red"><?php echo empty($phoneError) ? '' : $phoneError ; ?></span></p>
+                            <div class="col-md-12 form-group">
+								<input type="phone" class="form-control" id="name" name="phone" placeholder="Phone" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Phone'">
+							</div>
+	
 							<div class="col-md-12 form-group">
-								<button type="submit" value="submit" class="primary-btn">Log In</button>
+								<button type="submit" value="submit" class="primary-btn">Register </button>
 								
 							</div>
 						</form>
