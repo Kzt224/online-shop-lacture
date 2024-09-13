@@ -138,3 +138,25 @@ $name = $_POST['name'];
 
        $move_path = 
        $img_name = $_FILES['image']['name'];
+
+
+
+       $stmt = $pdo->prepare("SELECT * FROM products WHERE id=$id");
+     $stmt->execute();
+     $res = $stmt->fetch(PDO::FETCH_ASSOC);
+
+     if($qty > $res['quantity']){
+        echo "<script>alert('not enought quantity');window.location.href=''</script>";
+     }
+
+     <form action="addcart.php" method="POST">
+											<input type="hidden" name="_token" value="<?= $_SESSION['_token'] ?>">
+											<input type="hidden" name="id" value="<?= escape($value['id']) ?>">
+											<input type="hidden" name="qty" value="1">
+
+                                              <div class="social-info">
+												<button class="social-info" type="submit" style="display:contents">
+													<span class="ti-bag"></span>
+												</button>
+											  </div>
+										</form>

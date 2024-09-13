@@ -39,9 +39,12 @@
 
 
 		$estmt = $pdo->prepare("SELECT * FROM user WHERE email=:email");
-		$eRes = $estmt->execute([':email' => $email]);
+		 $estmt->execute([':email' => $email]);
+		 $user = $estmt->fetch(PDO::FETCH_ASSOC);
 
-		if($eRes){
+		
+
+		if($user){
 			echo "<script>alert('this Email was already have an account try another email');</script>";
 		}else{
 

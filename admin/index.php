@@ -5,7 +5,7 @@
  require("../config/common.php");
 
  
-  if(!$_SESSION['logged_in'] && !$_SESSION['user_id']){
+  if(!$_SESSION['logged_in'] && !$_SESSION['id']){
     header("location: login.php");
   }
 
@@ -28,7 +28,7 @@
       $pageno = 1;
     }
 
-    $numberOfrecs = 1;
+    $numberOfrecs = 4 ;
     $offSet = ($pageno -1) * $numberOfrecs ;
 
 

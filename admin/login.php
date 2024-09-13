@@ -17,7 +17,7 @@ if($_POST){
    if($user){
     if($user['role'] === 1){
       if(password_verify($password,$user['password'])){
-       $_SESSION['user_id'] = $user['id'];
+       $_SESSION['id'] = $user['id'];
        $_SESSION['user_name'] = $user['name'];
        $_SESSION['logged_in'] = time();
        $_SESSION['role_id'] = 1;

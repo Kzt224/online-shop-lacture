@@ -1,87 +1,14 @@
-<!DOCTYPE html>
-<html lang="zxx" class="no-js">
+<?php
 
-<head>
-    <!-- Mobile Specific Meta -->
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!-- Favicon-->
-    <link rel="shortcut icon" href="img/fav.png">
-    <!-- Author Meta -->
-    <meta name="author" content="CodePixar">
-    <!-- Meta Description -->
-    <meta name="description" content="">
-    <!-- Meta Keyword -->
-    <meta name="keywords" content="">
-    <!-- meta character set -->
-    <meta charset="UTF-8">
-    <!-- Site Title -->
-    <title>Karma Shop</title>
 
-    <!--
-            CSS
-            ============================================= -->
-    <link rel="stylesheet" href="css/linearicons.css">
-    <link rel="stylesheet" href="css/owl.carousel.css">
-    <link rel="stylesheet" href="css/font-awesome.min.css">
-    <link rel="stylesheet" href="css/themify-icons.css">
-    <link rel="stylesheet" href="css/nice-select.css">
-    <link rel="stylesheet" href="css/nouislider.min.css">
-    <link rel="stylesheet" href="css/bootstrap.css">
-    <link rel="stylesheet" href="css/main.css">
-</head>
+include("header.php");
 
-<body>
 
-    <!-- Start Header Area -->
-	<header class="header_area sticky-header">
-		<div class="main_menu">
-			<nav class="navbar navbar-expand-lg navbar-light main_box">
-            <div class="container">
-					<!-- Brand and toggle get grouped for better mobile display -->
-					<a class="navbar-brand logo_h" href="index.php"><h4>Poekaung Shopping<h4></a>
-					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-					 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-					</button>
-					<!-- Collect the nav links, forms, and other content for toggling -->
-					<div class="collapse navbar-collapse offset" id="navbarSupportedContent">
-						<ul class="nav navbar-nav navbar-right">
-							<li class="nav-item"><a href="index.php" class="cart"><span class="ti-bag"></span></a></li>
-							 <li class="nav-item">
-								<button class="search"><span class="lnr lnr-magnifier" id="search"></span></button>
-							</li>
-							<li class="nav-item"><a href="logout.php" class="cart"><span class="ti-power-off"></span></a></li>
-						</ul>
-					</div>
-				</div>
-		</div>
-		<div class="search_input" id="search_input_box">
-			<div class="container">
-				<form class="d-flex justify-content-between">
-					<input type="text" class="form-control" id="search_input" placeholder="Search Here">
-					<button type="submit" class="btn"></button>
-					<span class="lnr lnr-cross" id="close_search" title="Close Search"></span>
-				</form>
-			</div>
-		</div>
-	</header>
-	<!-- End Header Area -->
+ if(!$_SESSION['logged_in'] && !$_SESSION['user_id']){
+	header("location: login.php");
+  }
+?>
 
-    <!-- Start Banner Area -->
-    <section class="banner-area organic-breadcrumb">
-        <div class="container">
-            <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
-                <div class="col-first">
-                    <h1>Shopping Cart</h1>
-                    <nav class="d-flex align-items-center">
-                        
-                    </nav>
-                </div>
-            </div>
-        </div>
-    </section>
     <!-- End Banner Area -->
 
     <!--================Cart Area =================-->
@@ -89,64 +16,63 @@
         <div class="container">
             <div class="cart_inner">
                 <div class="table-responsive">
-                    <table class="table">
-                        <thead>
+                    <?php if(!empty($_SESSION['cart'])) :?>
+                        <table class="table">
+                          <thead>
                             <tr>
                                 <th scope="col">Product</th>
                                 <th scope="col">Price</th>
                                 <th scope="col">Quantity</th>
                                 <th scope="col">Total</th>
+                                <th scope="col">Actions</th>
                             </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
+                          </thead>
+                          <tbody>
+                            <?php  
+
+                            $total = 0;
+                            foreach ($_SESSION['cart'] as $key => $qty) :
+                               $id = str_replace('id','',$key);
+                               
+                               $stmt = $pdo->prepare("SELECT * FROM products WHERE id=$id");
+                               $stmt->execute();
+                               $res = $stmt->fetch(PDO::FETCH_ASSOC);
+                            
+                               $total += $res['price'] * $qty ;
+                        
+                            ?>
+                                <tr>
                                 <td>
                                     <div class="media">
                                         <div class="d-flex">
-                                            <img src="img/cart.jpg" alt="">
+                                            <img src="../admin/images/<?= escape($res['image']) ?>" width="100px" height="110px">
                                         </div>
                                         <div class="media-body">
-                                            <p>Minimalistic shop for multipurpose use</p>
+                                            <p><?= $res['name'] ?></p>
                                         </div>
                                     </div>
                                 </td>
                                 <td>
-                                    <h5>$360.00</h5>
+                                    <h5>$<?= $res['price'] ?></h5>
                                 </td>
                                 <td>
                                     <div class="product_count">
-                                        <input type="text" name="qty" id="sst" maxlength="12" value="1" title="Quantity:"
-                                            class="input-text qty">
-                                        <button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
-                                            class="increase items-count" type="button"><i class="lnr lnr-chevron-up"></i></button>
-                                        <button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
-                                            class="reduced items-count" type="button"><i class="lnr lnr-chevron-down"></i></button>
+                                        <input type="text" name="qty" id="sst" maxlength="12" value="<?= $qty ?>" title="Quantity:"
+                                            class="input-text qty" readonly>
                                     </div>
                                 </td>
                                 <td>
-                                    <h5>$720.00</h5>
+                                    <h5>$<?= $res['price'] * $qty ?></h5>
                                 </td>
+                                <td>
+                                    <a 
+                                     style="line-height: 30px;border-radius: 10px;"
+                                    class="primary-btn" href="cart_item_clear.php?pid=<?= $res['id'] ?>">Delete</a>
+                                </td>
+                                
                             </tr>
-                           
-                            
-                            <tr class="bottom_button">
-                                <td>
-                                    <a class="gray_btn" href="#">Update Cart</a>
-                                </td>
-                                <td>
 
-                                </td>
-                                <td>
-
-                                </td>
-                                <td>
-                                    <div class="cupon_text d-flex align-items-center">
-                                        <input type="text" placeholder="Coupon Code">
-                                        <a class="primary-btn" href="#">Apply</a>
-                                        <a class="gray_btn" href="#">CLoseCoupon</a>       
-                                     </div>
-                                </td>
-                            </tr>
+                            <?php endforeach ?>
                             <tr>
                                 <td>
 
@@ -158,43 +84,10 @@
                                     <h5>Subtotal</h5>
                                 </td>
                                 <td>
-                                    <h5>$2160.00</h5>
+                                    <h5>$<?= $total ?></h5>
                                 </td>
                             </tr>
-                            <tr class="shipping_area">
-                                <td>
-
-                                </td>
-                                <td>
-
-                                </td>
-                                <td>
-                                    <h5>Shipping</h5>
-                                </td>
-                                <td>
-                                    <div class="shipping_box">
-                                        <ul class="list">
-                                            <li><a href="#">Flat Rate: $5.00</a></li>
-                                            <li><a href="#">Free Shipping</a></li>
-                                            <li><a href="#">Flat Rate: $10.00</a></li>
-                                            <li class="active"><a href="#">Local Delivery: $2.00</a></li>
-                                        </ul>
-                                        <h6>Calculate Shipping <i class="fa fa-caret-down" aria-hidden="true"></i></h6>
-                                        <select class="shipping_select">
-                                            <option value="1">Bangladesh</option>
-                                            <option value="2">India</option>
-                                            <option value="4">Pakistan</option>
-                                        </select>
-                                        <select class="shipping_select">
-                                            <option value="1">Select a State</option>
-                                            <option value="2">Select a State</option>
-                                            <option value="4">Select a State</option>
-                                        </select>
-                                        <input type="text" placeholder="Postcode/Zipcode">
-                                        <a class="gray_btn" href="checkout.php">Update Details</a>
-                                    </div>
-                                </td>
-                            </tr>
+                            
                             <tr class="out_button_area">
                                 <td>
 
@@ -206,14 +99,20 @@
 
                                 </td>
                                 <td>
+
+                                </td>
+                                
+                                <td>
                                     <div class="checkout_btn_inner d-flex align-items-center">
-                                    <a class="gray_btn" href="index.php">Continue Shopp</a>       
-                                        <a class="primary-btn" href="checkout.php">Proceed to checkout</a>
+                                        <a class="gray_btn" href="clear.php">ClearAll</a>       
+                                        <a class="primary-btn" href="index.php">Continue Shopping</a>
+                                        <a class="gray_btn" href="checkout.php">Submit Order</a>       
                                     </div>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
+                   <?php endif ?>
                 </div>
             </div>
         </div>

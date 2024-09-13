@@ -1,7 +1,7 @@
 <?php
   require("../config/config.php");
 
-  if(!$_SESSION['logged_in'] && !$_SESSION['user_id']){
+  if(!$_SESSION['logged_in'] && !$_SESSION['id']){
     header("location: login.php");
  }
  if($_SESSION['role_id'] != 1){

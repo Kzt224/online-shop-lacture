@@ -1,3 +1,13 @@
+<?php
+
+ session_start();
+  
+ include("../config/config.php");
+ include("../config/common.php");
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="zxx" class="no-js">
 
@@ -28,6 +38,17 @@
 	<link rel="stylesheet" href="css/nouislider.min.css">
 	<link rel="stylesheet" href="css/bootstrap.css">
 	<link rel="stylesheet" href="css/main.css">
+
+	<style>
+
+		@media (max-width: 900px) {
+			.single-product a img{
+				padding-left: 100px;
+				width: 300px;
+				height: 500px;
+			}
+		}
+	</style>
 </head>
 
 <body id="category">
@@ -46,13 +67,43 @@
 						<span class="icon-bar"></span>
 					</button>
 					<!-- Collect the nav links, forms, and other content for toggling -->
+
+					<?php 
+					  $cart  = 0;
+					  if(isset($_SESSION['cart'])){
+						 foreach ($_SESSION['cart'] as $key => $qty) {
+							 $cart += $qty;
+						 }
+					  }
+					?>
 					<div class="collapse navbar-collapse offset" id="navbarSupportedContent">
 						<ul class="nav navbar-nav navbar-right">
-							<li class="nav-item"><a href="cart.php" class="cart"><span class="ti-bag"></span></a></li>
-							 <li class="nav-item">
-								<button class="search"><span class="lnr lnr-magnifier" id="search"></span></button>
+							<li class="nav-item">
+								<a href="cart.php" class="cart">
+									<span class="ti-bag">
+										 <sup class="text-success fs-3 fw-3"><?= $cart ?></sup>
+					                </span>
+								</a>
 							</li>
-							<li class="nav-item"><a href="logout.php" class="cart"><span class="ti-power-off"></span></a></li>
+							<li class="nav-item">
+								<a href="logout.php" class="cart">
+									<span class="ti-power-off">
+										 
+					                </span>
+								</a>
+							</li>
+							<?php 
+  
+								$link = $_SERVER['PHP_SELF'];
+								$arra_link = explode('/',$link);
+								$page = end($arra_link);
+								?>
+
+								<?php if ($page == 'index.php') : ?>
+									<li class="nav-item">
+										<button class="search"><span class="lnr lnr-magnifier" id="search"></span></button>
+									</li>
+							    <?php endif ?>
 						</ul>
 					</div>
 				</div>
@@ -82,26 +133,3 @@
 			</div>
 		</div>
 	</section>
-	<!-- End Banner Area
-	<div class="container">
-		<div class="row">
-			<div class="col-xl-3 col-lg-4 col-md-5">
-				<div class="sidebar-categories">
-					<div class="head">Products Categories</div>
-					<ul class="main-categories">
-						<li class="main-nav-list"><a data-toggle="collapse" href="#fruitsVegetable" aria-expanded="false" aria-controls="fruitsVegetable"><span
-								 class="lnr lnr-arrow-right"></span>Fruits and Vegetables<span class="number">(53)</span></a>
-							<ul class="collapse" id="fruitsVegetable" data-toggle="collapse" aria-expanded="false" aria-controls="fruitsVegetable">
-								<li class="main-nav-list child"><a href="#">Frozen Fish<span class="number">(13)</span></a></li>
-								<li class="main-nav-list child"><a href="#">Dried Fish<span class="number">(09)</span></a></li>
-								<li class="main-nav-list child"><a href="#">Fresh Fish<span class="number">(17)</span></a></li>
-								<li class="main-nav-list child"><a href="#">Meat Alternatives<span class="number">(01)</span></a></li>
-								<li class="main-nav-list child"><a href="#">Meat<span class="number">(11)</span></a></li>
-							</ul>
-						</li>
-					</ul>
-				</div>
-			</div>
-			<div class="col-xl-9 col-lg-8 col-md-7"> -->
-
-		

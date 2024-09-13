@@ -4,7 +4,7 @@
   require("../config/config.php");
   require("../config/common.php");
 
-  if(!$_SESSION['logged_in'] && !$_SESSION['user_id']){
+  if(!$_SESSION['logged_in'] && !$_SESSION['id']){
     header("location: login.php");
      }
   if($_SESSION['role_id'] != 1){
@@ -38,6 +38,7 @@ if($_POST){
         }elseif((is_numeric($_POST['quantity']) != 1)){
             $quanError = "quantity  access only number";
         }
+
         if(empty($_POST['price'])){
         $priceError = "price cannot be null";
         }elseif($_POST['price'] && (is_numeric($_POST['price']) != 1)){
@@ -45,36 +46,50 @@ if($_POST){
         }
 
     }else{
-         $file = 'images/'.($_FILES['image']['name']);
-         $image_type = pathinfo($file,PATHINFO_EXTENSION);
 
-         if($image_type != 'jpeg' && $image_type != 'jpg' && $image_type != 'png'){
-            echo "<script>alert('Image type must be jpg or jpeg or png')</script>";
-         }else{
-            $name = $_POST['name'];
-            $description = $_POST['description'];
-            $price = $_POST['price'];
-            $category = $_POST['category'];
-            $quantity = $_POST['quantity'];
-            $image = $_FILES['image']['name'];
-            
-          
-
-            move_uploaded_file($_FILES['image']['tmp_name'],$file);
-
-            $statement = $pdo->prepare("INSERT INTO products(name,description,category_id,quantity,price,image)
-                                       VALUES(:name,:description,:category_id,:quantity,:price,:image)");
-            
-            $result = $statement->execute(
-                array(':name' => $name,':description' => $description,
-                      ':category_id' => $category,':quantity' => $quantity,
-                      ':price' => $price, ':image' => $image)
-            );
-
-            if($result){
-              echo "<script>alert('Product add successfully');window.location.href='index.php';</script>";
-            }
+          if($_POST['price'] && (is_numeric($_POST['price']) != 1)){
+            $priceError = "price  access only number";
          }
+         if((is_numeric($_POST['quantity']) != 1)){
+          $quanError = "quantity  access only number";
+         }
+         
+         if($quanError == '' && $priceError == ''){
+          $file = 'images/'.($_FILES['image']['name']);
+          $image_type = pathinfo($file,PATHINFO_EXTENSION);
+ 
+          if($image_type != 'jpeg' && $image_type != 'jpg' && $image_type != 'png'){
+             echo "<script>alert('Image type must be jpg or jpeg or png')</script>";
+          }else{
+             $name = $_POST['name'];
+             $description = $_POST['description'];
+             $price = $_POST['price'];
+             $category = $_POST['category'];
+             $quantity = $_POST['quantity'];
+             $image = $_FILES['image']['name'];
+             
+           
+ 
+             move_uploaded_file($_FILES['image']['tmp_name'],$file);
+ 
+             $statement = $pdo->prepare("INSERT INTO products(name,description,category_id,quantity,price,image)
+                                        VALUES(:name,:description,:category_id,:quantity,:price,:image)");
+             
+             $result = $statement->execute(
+                 array(':name' => $name,':description' => $description,
+                       ':category_id' => $category,':quantity' => $quantity,
+                       ':price' => $price, ':image' => $image)
+             );
+ 
+             if($result){
+               echo "<script>alert('Product add successfully');window.location.href='index.php';</script>";
+             }
+          }
+          
+         }
+
+
+
     }
 }   
  ?>

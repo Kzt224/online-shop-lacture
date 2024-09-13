@@ -1,13 +1,17 @@
 <?php
- session_start();
+ 
 
- include("../config/config.php");
- include("../config/common.php");
+ include('header.php') ?>
 
- if(!$_SESSION['logged_in'] && !$_SESSION['user_id']){
-    header("location: login.php");
+<?php
+
+
+if(!$_SESSION['logged_in'] && !$_SESSION['user_id']){
+	header("location: login.php");
   }
+
   
+
   if(!empty($_POST['search'])){
     setcookie('search', $_POST['search'], time() + (86400 * 30), "/");
  }else{
@@ -30,13 +34,13 @@
 	if(!empty($_GET['id'])){
         $id = $_GET['id'];
 
-		$pstmt = $pdo->prepare("SELECT * FROM products WHERE category_id = $id");
+		$pstmt = $pdo->prepare("SELECT * FROM products WHERE category_id = $id AND quantity > 0 ORDER BY id DESC ");
 		$pstmt->execute();
 		$rawresult = $pstmt->fetchAll();
 
 		$total_pages = ceil(count($rawresult) / $numberOfrecs);
 
-		$statement = $pdo->prepare("SELECT * FROM products WHERE  category_id = $id  ORDER BY id DESC LIMIT $offSet,$numberOfrecs ");
+		$statement = $pdo->prepare("SELECT * FROM products WHERE  category_id = $id AND quantity > 0 ORDER BY id DESC LIMIT $offSet,$numberOfrecs ");
 		$statement->execute();
 		$result = $statement->fetchAll();
 		
@@ -44,12 +48,12 @@
 			//  if no search the category run this code 
       if(empty($_POST['search']) && empty($_COOKIE['search'])){
 	//code for table
-			$statement = $pdo->prepare("SELECT * FROM products ORDER BY id DESC");
+			$statement = $pdo->prepare("SELECT * FROM products WHERE  quantity > 0 ORDER BY id DESC");
 			$statement->execute();
 			$rawresult = $statement->fetchAll();
 			$total_pages = ceil(count($rawresult) / $numberOfrecs);
 		
-			$statement = $pdo->prepare("SELECT * FROM products ORDER BY id DESC LIMIT $offSet,$numberOfrecs");
+			$statement = $pdo->prepare("SELECT * FROM products WHERE  quantity > 0 ORDER BY id DESC LIMIT $offSet,$numberOfrecs");
 			$statement->execute();
 			$result = $statement->fetchAll();
 		}else{
@@ -62,9 +66,9 @@
 				$statement = $pdo->prepare("SELECT * FROM products WHERE name LIKE '%$searchKey%'  ORDER BY id DESC");
 				$statement->execute();
 				$rawresult = $statement->fetchAll();
-				$total_pages = ceil(count($rawesult) / $numberOfrecs);
+				$total_pages = ceil(count($rawresult) / $numberOfrecs);
 
-				$statement = $pdo->prepare("SELECT * FROM products WHERE name LIKE '%$searchKey%'  ORDER BY id DESC LIMIT $offSet,$numberOfrecs ");
+				$statement = $pdo->prepare("SELECT * FROM products WHERE name LIKE '%$searchKey%' AND quantity > 0  ORDER BY id DESC LIMIT $offSet,$numberOfrecs ");
 				$statement->execute();
 				$result = $statement->fetchAll();
 		}
@@ -73,7 +77,7 @@
      
 ?>
 
-<?php include('header.php') ?>
+
      <!-- End Banner Area -->
 	<div class="container">
       <?php  
@@ -123,8 +127,8 @@
 						   foreach ($result as  $value) { ?>
 							 
 							 <div class="col-lg-4 col-md-6">
-							<div class="single-product">
-								<a href="product_detail.php?id=<?=$value['id']?>"><img class="img-fluid" src="../admin/images/<?= $value['image'] ?>" alt="" style="height: 250px !important;"></a>
+							 <div class="single-product">
+								<a href="product_detail.php?id=<?=$value['id']?>"><img class="img-fluid" src="../admin/images/<?= $value['image'] ?>" alt="" style="height: 200px !important;"></a>
 								 <div class="product-details">
 									<h6><?= escape( $value['name'] ) ?></h6>
 									<div class="price">
@@ -132,10 +136,9 @@
 										<h6 class="l-through">$210.00</h6>
 									</div>
 									<div class="prd-bottom">
-
-										<a href="cart.php?id=<?= $value['id'] ?>" class="social-info">
+										<a href="addcart.php?id=<?= $value['id'] ?>" class="social-info">
 											<span class="ti-bag"></span>
-											<p class="hover-text">add to bag</p>
+											<p class="hover-text">Add to bag</p>
 										</a>
 										<a href="product_detail.php?id=<?= $value['id'] ?>" class="social-info">
 											<span class="lnr lnr-move"></span>

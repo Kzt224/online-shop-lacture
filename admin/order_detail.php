@@ -5,21 +5,14 @@
  require("../config/common.php");
 
  
-  if(!$_SESSION['logged_in'] && !$_SESSION['user_id']){
+  if(!$_SESSION['logged_in'] && !$_SESSION['id']){
     header("location: login.php");
   }
 
   if($_SESSION['role_id'] != 1){
      header("location: login.php");
   }
-  if(!empty($_POST['search'])){
-    setcookie('search', $_POST['search'], time() + (86400 * 30), "/");
- }else{
-   if(empty($_GET['pageno'])){
-     unset($_COOKIE['search']);
-     setcookie('search', '', -1, "/");
-   }
- }
+
 
 ?>
   <?php 
@@ -44,12 +37,12 @@
 
         $id = $_GET['id'];
        
-       $statement = $pdo->prepare("SELECT * FROM sale_orders_detail WHERE id = $id ");
+       $statement = $pdo->prepare("SELECT * FROM sale_orders_detail WHERE sale_order_id = $id ");
        $statement->execute();
        $rawresult = $statement->fetchAll();
        $total_pages = ceil(count($rawresult) / $numberOfrecs);
 
-       $statement = $pdo->prepare("SELECT * FROM sale_orders_detail WHERE id = $id LIMIT $offSet,$numberOfrecs");
+       $statement = $pdo->prepare("SELECT * FROM sale_orders_detail WHERE sale_order_id = $id LIMIT $offSet,$numberOfrecs");
        $statement->execute();
        $result = $statement->fetchAll();
 
@@ -120,15 +113,15 @@
              
               <nav aria-label="Page navigation example" style="float: right">
                 <ul class="pagination">
-                        <li class="page-item"><a class="page-link" href="?pageno=1">First</a></li>
+                        <li class="page-item"><a class="page-link" href="?id=<?= $_GET['id'] ?>&pageno=1">First</a></li>
                         <li class="page-item <?php if($pageno <= 1){echo 'disabled';} ?>">
-                          <a class="page-link" href="<?php if($pageno <= 1){echo '#';}else{echo "?pageno=".($pageno -1 );} ?>">Previous</a>
+                          <a class="page-link" href="<?php if($pageno <= 1){echo '#';}else{echo "?id= " .$_GET['id'] ." pageno=".($pageno -1 );} ?>">Previous</a>
                         </li>
                         <li class="page-item"><a class="page-link" href="#"><?= $pageno ?></a></li>
                         <li class="page-item <?php if($pageno >= $total_pages){echo 'disabled';} ?>">
-                          <a class="page-link" href="<?php if($pageno >= $total_pages){echo "#";}else{echo "?pageno=".($pageno +1);} ?>">Next</a>
+                          <a class="page-link" href="<?php if($pageno >= $total_pages){echo "#";}else{echo "?id=".$_GET['id']. "pageno=".($pageno +1);} ?>">Next</a>
                         </li>
-                        <li class="page-item"><a class="page-link" href="?pageno=<?= $total_pages ?>">Last</a></li>
+                        <li class="page-item"><a class="page-link" href="?id=<?= $_GET['id'] ?>&pageno=<?= $total_pages ?>">Last</a></li>
                       </ul>
                </nav>
               

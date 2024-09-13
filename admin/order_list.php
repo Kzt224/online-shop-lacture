@@ -5,7 +5,7 @@
  require("../config/common.php");
 
  
-  if(!$_SESSION['logged_in'] && !$_SESSION['user_id']){
+  if(!$_SESSION['logged_in'] && !$_SESSION['id']){
     header("location: login.php");
   }
 

@@ -40,40 +40,51 @@ scratch. This page gets rid of all links and provides the needed markup only.
             $arra_link = explode('/',$link);
             $page = end($arra_link);
           ?>
-        
-        <?php if($page != 'order_list.php'){ ?>
-           <!-- Navbar Search -->
-      <li class="nav-item">
-        <a class="nav-link" data-widget="navbar-search" href="#" role="button">
-          <i class="fas fa-search"></i>
-          </a>
-           <div class="navbar-search-block">
-          <form class="form-inline" method="post"
-            <?php if($page === 'product.php') : ?>
-              action="index.php"
-            <?php elseif($page === 'category.php') : ?>
-              action="category.php"
-            <?php elseif($page === 'user.php') : ?>
-              action="user.php"
-          <?php endif  ?>
-          >
-          <input type="hidden" name="_token" value="<?php echo $_SESSION['_token']; ?>">
-            <div class="input-group input-group-sm">
-              <input name= "search" class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
-              <div class="input-group-append">
-                <button class="btn btn-navbar" type="submit">
-                  <i class="fas fa-search"></i>
-                </button>
-                <button class="btn btn-navbar" type="button" data-widget="navbar-search">
-                  <i class="fas fa-times"></i>
-                </button>
-              </div>
-            </div>
-          </form>
-        </div>
 
-       <?php } ?>
-      </li>
+          <?php  
+            
+            if($page == 'index.php' || $page == 'category.php' || $page == 'user.php'  ) { ?>
+
+              <?php if($page != 'order_list.php' ){ ?>
+                <!-- Navbar Search -->
+           <li class="nav-item">
+             <a class="nav-link" data-widget="navbar-search" href="#" role="button">
+               <i class="fas fa-search"></i>
+               </a>
+                <div class="navbar-search-block">
+               <form class="form-inline" method="post"
+                 <?php if($page === 'product.php') : ?>
+                   action="index.php"
+                 <?php elseif($page === 'category.php') : ?>
+                   action="category.php"
+                 <?php elseif($page === 'user.php') : ?>
+                   action="user.php"
+               <?php endif  ?>
+               >
+               <input type="hidden" name="_token" value="<?php echo $_SESSION['_token']; ?>">
+                 <div class="input-group input-group-sm">
+                   <input name= "search" class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
+                   <div class="input-group-append">
+                     <button class="btn btn-navbar" type="submit">
+                       <i class="fas fa-search"></i>
+                     </button>
+                     <button class="btn btn-navbar" type="button" data-widget="navbar-search">
+                       <i class="fas fa-times"></i>
+                     </button>
+                   </div>
+                 </div>
+               </form>
+             </div>
+     
+            <?php } ?>
+           </li>
+              <?php
+            }
+          
+          
+          ?>
+        
+        
     </ul>
 
   </nav>

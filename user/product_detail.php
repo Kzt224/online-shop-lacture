@@ -1,12 +1,11 @@
 <?php 
 
- session_start();
- include("../config/config.php");
- include("../config/common.php");
 
- if(!$_SESSION['logged_in'] && !$_SESSION['user_id']){
-    header("location: login.php");
-  }
+ include('header.php') ?>
+
+
+<?php 
+
 
 if(isset($_GET['id'])){
 
@@ -26,14 +25,7 @@ $ctres = $ctstmt->fetch(PDO::FETCH_ASSOC);
 ?>
 
 
-
-
-
-
-<?php include('header.php') ?>
-
-
-<div class="product_image_area">
+<div class="product_image_area" style="padding-top: 0 !important;">
 		<div class="container">
 			<div class="row s_product_inner">
 				<div class="col-lg-6">
@@ -52,17 +44,22 @@ $ctres = $ctstmt->fetch(PDO::FETCH_ASSOC);
 							<li><a href="#"><span>Availibility</span> : In Stock <?= $res['quantity'] ?> pcs</a></li>
 						</ul>
 						<p><?= $res['description'] ?></p>
-						<div class="product_count">
-							<label for="qty">Quantity:</label>
-							<input type="text" name="qty" id="sst" maxlength="12" value="1" title="Quantity:" class="input-text qty">
-							<button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
-							 class="increase items-count" type="button"><i class="lnr lnr-chevron-up"></i></button>
-							<button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
-							 class="reduced items-count" type="button"><i class="lnr lnr-chevron-down"></i></button>
-						</div>
-						<div class="card_area d-flex align-items-center">
-							<a class="primary-btn" href="cart.php?id=<?= $res['id']?>">Add to Cart</a>
-						</div>
+						<form action="addcart.php" method="POST">
+							<input type="hidden" name="_token" value="<?php echo $_SESSION['_token'];?>">
+							<input type="hidden" name="id" value="<?= $res['id'] ?>">
+								<div class="product_count">
+									<label for="qty">Quantity:</label>
+									<input type="text" name="qty" id="sst" maxlength="12" value="1" title="Quantity:" class="input-text qty">
+									<button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
+									class="increase items-count" type="button"><i class="lnr lnr-chevron-up"></i></button>
+									<button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
+									class="reduced items-count" type="button"><i class="lnr lnr-chevron-down"></i></button>
+								</div>
+							  <div class="card_area d-flex align-items-center">
+								<button type="submit" class="primary-btn" style="border: 1px;" >Add to Cart</button>
+								<a class="primary-btn" href="index.php">Back</a>
+							</div>
+						</form>
 					</div>
 				</div>
 			</div>

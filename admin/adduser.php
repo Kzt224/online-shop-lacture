@@ -4,7 +4,7 @@
   require("../config/config.php");
   require("../config/common.php");
 
- if(!$_SESSION['logged_in'] && !$_SESSION['user_id']){
+ if(!$_SESSION['logged_in'] && !$_SESSION['id']){
     header("location: login.php");
  }
  if($_SESSION['role_id'] != 1){
@@ -21,7 +21,8 @@
           $role = 1;
       }
 
-     if(empty($_POST['username']) || empty($_POST['email']) || empty($_POST['password']) || strlen($_POST['password']) < 4){
+     if(empty($_POST['username']) || empty($_POST['email']) || empty($_POST['address'])
+             || empty($_POST['password']) || strlen($_POST['password']) < 4){
 
       if(empty($_POST['username'])){
         $usernameError = "*Username cannnot be null";
@@ -35,6 +36,9 @@
      if(strlen($_POST['password']) < 4){
       $passwordError = "*password should be 4 character at least";
      }
+     if(empty($_POST['address'])){
+      $AddressError = "*address cannnot be null";
+    }
     }else{
      $stamnt = $pdo->prepare("INSERT INTO user (name,password,email,role) VALUES(:name,:password,:email,:role)");
         $res = $stamnt->execute(
@@ -59,9 +63,9 @@
                 <form action="" method="post">
                 <input type="hidden" name="_token" value="<?php echo $_SESSION['_token']; ?>">
                 <div class="form-group">
-                <label for="username">User name</label>
-                <p style="color:red"><?php echo empty($usernameError) ? '' : $usernameError; ?></p>
-                <input type="text" name="username" class="form-control" >
+                  <label for="username">User name</label>
+                  <p style="color:red"><?php echo empty($usernameError) ? '' : $usernameError; ?></p>
+                  <input type="text" name="username" class="form-control" >
               </div>
               <div class="form-group">
                  <label for="email" >email</label>
@@ -72,6 +76,11 @@
                 <label for="password">Password</label>
                 <p style="color:red"><?php echo empty($passwordError) ? '' : $passwordError; ?></p>
                 <input type="password" name="password" class="form-control" >
+              </div>
+              <div class="form-group">
+                  <label for="username">Address</label>
+                  <p style="color:red"><?php echo empty($AddressError) ? '' : $AddressError; ?></p>
+                  <input type="text" name="address" class="form-control" >
               </div>
               <div class="form-group">
                  <label for="admin">Admin</label><br>
