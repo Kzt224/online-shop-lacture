@@ -55,6 +55,7 @@ if($_POST){
          }
          
          if($quanError == '' && $priceError == ''){
+          
           $file = 'images/'.($_FILES['image']['name']);
           $image_type = pathinfo($file,PATHINFO_EXTENSION);
  

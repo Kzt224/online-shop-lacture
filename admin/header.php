@@ -9,12 +9,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Blog | Admin Deskbord</title>
+  <title>PK Shopping | Admin Deskbord</title>
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
+            
+  <link rel="stylesheet" href="https://cdn.datatables.net/2.1.6/css/dataTables.dataTables.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="dist/css/adminlte.min.css">
   <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
@@ -145,6 +147,41 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 Orders
               </p>
             </a>
+          </li>
+          <li class="nav-item menu-open">
+            <a href="#" class="nav-link ">
+              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>
+                 Order Reportings
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="weekely_report.php" class="nav-link ">
+                  <i class="far nav-icon"></i>
+                  <p>Weekely Report</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="monthly_report.php" class="nav-link">
+                  <i class="far  nav-icon"></i>
+                  <p>Monthly Report</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="royal_cus.php" class="nav-link">
+                  <i class="far  nav-icon"></i>
+                  <p>Royal Customer</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="best_sell_item.php" class="nav-link">
+                  <i class="far  nav-icon"></i>
+                  <p>Best Seller Item</p>
+                </a>
+              </li>
+            </ul>
           </li>
         </ul>
       </nav>

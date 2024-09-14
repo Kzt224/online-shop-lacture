@@ -11,13 +11,13 @@
     header("location: login.php");
      }
 
-    if($_GET['id']){
+    if(!empty($_GET['id'])){
         $stmt = $pdo->prepare("SELECT * FROM products WHERE id=".$_GET['id']);
         $res = $stmt->execute();
         $res = $stmt->fetchAll();
     }
 
-    if($_POST){
+    if(!empty($_POST)){
 
       if(empty($_POST['name']) || empty($_POST['description']) 
           || empty($_POST['quantity']) || empty($_POST['price'])
@@ -50,15 +50,20 @@
    
        }else{
 
-            if($_POST['price'] && (is_numeric($_POST['price']) != 1)){
+          if((is_numeric($_POST['price']) != 1)){
               $priceError = "price  access only number";
+          }else{
+            $priceError = '';
           }
           if((is_numeric($_POST['quantity']) != 1)){
             $quanError = "quantity  access only number";
+          }else{
+            $quanError = '';
           }
           
           if($quanError == '' && $priceError == ''){ 
               
+
             if(($_FILES['image']['name'] != null )){ 
              
               $file = 'images/'.($_FILES['image']['name']);
@@ -106,7 +111,7 @@
                         ':category_id' => $category,':quantity' => $quantity,
                         ':price' => $price)
                 );
-                            
+                            // 
   
               if($result){
               echo "<script>alert('Product edited successfully');window.location.href='index.php';</script>";

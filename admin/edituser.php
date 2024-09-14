@@ -102,6 +102,11 @@
                 <span style= "font-size: 10px">this user has an password</span>
                 <input type="password" name="password" class="form-control">
               </div>
+              <div class="form-group">
+                 <label for="address" >Address</label>
+                 <p style="color:red"><?php echo empty($emailError) ? '' : $emailError; ?></p>
+                  <input type="email" name="email" class="form-control" value="<?= escape($result['email']) ?>">
+              </div>
                <div class="form-group">
                  <label for="Admin">Admin</label>
                  <input type="checkbox" name="role" <?php if($result['role'] == 1){echo 'checked';}else{echo 'unchecked';} ?>>

@@ -25,7 +25,7 @@
 	<!-- meta character set -->
 	<meta charset="UTF-8">
 	<!-- Site Title -->
-	<title>Karma Shop</title>
+	<title>PK  Shopping</title>
 
 	<!--
             CSS
@@ -86,7 +86,7 @@
 								</a>
 							</li>
 							<li class="nav-item">
-								<a href="logout.php" class="cart">
+								<a href="ulogout.php" class="cart">
 									<span class="ti-power-off">
 										 
 					                </span>
